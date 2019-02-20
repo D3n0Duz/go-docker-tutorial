@@ -6,10 +6,10 @@ build:
 
 docker-build:
 	GOOS=linux GOARCH=amd64 go build -o main
-	docker build -t leighmcculloch/helloworld-go .
+	docker build -t helloworld-go .
 
 docker-run:
-	docker run -it -p 8080:80 leighmcculloch/helloworld-go
+	docker run -it -p 8080:8080 helloworld-go
 
 docker-push:
-	docker push leighmcculloch/helloworld-go
+	docker push helloworld-go
