@@ -11,10 +11,9 @@ RUN mkdir -p ${GOPATH}/go-rest-api;
 COPY . ${GOPATH}/go-rest-api
 WORKDIR $GOPATH/go-rest-api
 
-# Fetch dependencies.
-
 # Using go get.
-RUN go get -d -v
+RUN go get -d -v ./...
+
 
 # Build the binary.
 RUN go build -o app .
