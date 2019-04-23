@@ -1,5 +1,5 @@
 FROM scratch
 ENV PORT 80
 EXPOSE $PORT
-ADD main /
+ADD . /
 CMD ["/main"]

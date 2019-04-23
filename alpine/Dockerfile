@@ -1,0 +1,31 @@
+############################
+# STEP 1 build executable binary
+############################
+FROM golang:alpine AS builder
+
+# Install git.
+# Git is required for fetching the dependencies.
+RUN apk update && apk add --no-cache git
+RUN mkdir -p ${GOPATH}/go-rest-api;
+
+COPY . ${GOPATH}/go-rest-api
+WORKDIR $GOPATH/go-rest-api
+
+# Fetch dependencies.
+
+# Using go get.
+RUN go get -d -v
+
+# Build the binary.
+RUN go build -o main main.go
+
+############################
+# STEP 2 build a small image
+############################
+FROM alpine:latest
+
+# Copy our static executable.
+COPY --from=0 /go/go-rest-api .
+
+# Run the hello binary.
+ENTRYPOINT ["/main"]
