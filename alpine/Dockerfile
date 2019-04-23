@@ -17,7 +17,7 @@ WORKDIR $GOPATH/go-rest-api
 RUN go get -d -v
 
 # Build the binary.
-RUN go build -o main main.go
+RUN go build -o app .
 
 ############################
 # STEP 2 build a small image
@@ -25,7 +25,7 @@ RUN go build -o main main.go
 FROM alpine:latest
 
 # Copy our static executable.
-COPY --from=0 /go/go-rest-api .
+COPY --from=builder /go/go-rest-api .
 
 # Run the hello binary.
-ENTRYPOINT ["/main"]
+ENTRYPOINT ["/app"]
