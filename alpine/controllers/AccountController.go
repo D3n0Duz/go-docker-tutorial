@@ -10,14 +10,14 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type UserController struct {
+type AccountController struct {
 }
 
-func (controller *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
+func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.Request) {
 
-	userID := chi.URLParam(r, "userid")
+	accountID := chi.URLParam(r, "accountid")
 
-	fmt.Fprint(w, "GET "+userID)
+	fmt.Fprint(w, "GET "+accountID)
 
 	/*scores, err := controller.PlayerService.GetScores(player1Name, player2Name)
 	if err != nil {
@@ -29,26 +29,10 @@ func (controller *UserController) GetUser(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(res).Encode(response)*/
 }
 
-func (controller *UserController) PostUser(w http.ResponseWriter, r *http.Request) {
+func (controller *AccountController) PostAccount(w http.ResponseWriter, r *http.Request) {
 
-	userID := chi.URLParam(r, "userid")
-	fmt.Fprint(w, "POST "+userID)
-
-	/*scores, err := controller.PlayerService.GetScores(player1Name, player2Name)
-	if err != nil {
-		//Handle error
-	}
-
-	response := controller.PlayerHelper.BuildScoresVM(scores)
-
-	json.NewEncoder(res).Encode(response)
-	*/
-}
-
-func (controller *UserController) PutUser(w http.ResponseWriter, r *http.Request) {
-
-	userID := chi.URLParam(r, "userid")
-	fmt.Fprint(w, "PUT "+userID)
+	accountID := chi.URLParam(r, "accountid")
+	fmt.Fprint(w, "POST "+accountID)
 
 	/*scores, err := controller.PlayerService.GetScores(player1Name, player2Name)
 	if err != nil {
@@ -61,11 +45,27 @@ func (controller *UserController) PutUser(w http.ResponseWriter, r *http.Request
 	*/
 }
 
-func (controller *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.Request) {
 
-	userID := chi.URLParam(r, "userid")
+	accountID := chi.URLParam(r, "accountid")
+	fmt.Fprint(w, "PUT "+accountID)
 
-	fmt.Fprint(w, "DELETE "+userID)
+	/*scores, err := controller.PlayerService.GetScores(player1Name, player2Name)
+	if err != nil {
+		//Handle error
+	}
+
+	response := controller.PlayerHelper.BuildScoresVM(scores)
+
+	json.NewEncoder(res).Encode(response)
+	*/
+}
+
+func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *http.Request) {
+
+	accountID := chi.URLParam(r, "accountid")
+
+	fmt.Fprint(w, "DELETE "+accountID)
 
 	/*scores, err := controller.PlayerService.GetScores(player1Name, player2Name)
 	if err != nil {

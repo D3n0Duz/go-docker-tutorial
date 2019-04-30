@@ -18,17 +18,17 @@ type router struct{}
 
 func (router *router) InitRouter() *chi.Mux {
 
-	var controllersss controllers.UserController
+	var controllersss controllers.AccountController
 	r := chi.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Hello world!")
 	})
 
-	r.Get("/users/{userid}", controllersss.GetUser)
-	r.Post("/users/{userid}", controllersss.PostUser)
-	r.Put("/users/{userid}", controllersss.PutUser)
-	r.Delete("/users/{userid}", controllersss.DeleteUser)
+	r.Get("/accounts/{accountid}", controllersss.GetAccount)
+	r.Post("/accounts/{accountid}", controllersss.PostAccount)
+	r.Put("/accounts/{accountid}", controllersss.PutAccount)
+	r.Delete("/accounts/{accountid}", controllersss.DeleteAccount)
 
 	return r
 }
