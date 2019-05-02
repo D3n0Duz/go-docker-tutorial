@@ -3,14 +3,14 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-
-	//"github.com/irahardianto/service-pattern-go/helpers"
-	//"github.com/irahardianto/service-pattern-go/interfaces"
-
+	"./interfaces"
+	"./helpers"
 	"github.com/go-chi/chi"
 )
 
 type AccountController struct {
+	AccountService interfaces.IAccountService
+	AccountHelper helpers.AccountHelper
 }
 
 func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.Request) {
