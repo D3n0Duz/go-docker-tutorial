@@ -1,6 +1,8 @@
-packages models
+package models
 
-import time
+import (
+	"time"
+)
 
 type AccountModel struct {
 	AccountStateID int
