@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
-
-	"./controllers"
-
 	"github.com/go-chi/chi"
 )
 
@@ -18,7 +15,7 @@ type router struct{}
 
 func (router *router) InitRouter() *chi.Mux {
 
-	var accountController controllers.AccountController
+	accountController := ServiceContainer().InjectAccountController()
 	r := chi.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
