@@ -6,8 +6,7 @@ import (
 	"google.golang.org/api/option"
 	"context"
 	"log"
-	
-	"google.golang.org/api/iterator"
+	"encoding/json"
 	"fmt"
 )
 
@@ -29,25 +28,19 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	}
 	defer client.Close()
 
-	iter := client.Collection("accounts").Documents(ctx)
-	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
-
-		}
-
+	doc, err := client.Collection("accounts").Doc(accountid).Get(ctx)
+	
+	if err != nil {
 		fmt.Println(doc.Data())
-		var data models.AccountModel
-		//json.Unmarshal([]byte(doc.Data()[0]), &data)
-		//data, _ := json.Marshal(doc.Data())
-
-		return data, nil
+		return models.AccountModel{}, nil
 	}
-	return models.AccountModel{}, err
+
+	data := models.AccountModel{}
+
+	jsonString, _ := json.Marshal(doc.Data())
+	json.Unmarshal(jsonString, &data)
+
+	return data, nil
 }
 
 func (repository *AccountRepository) PostAccount(accountid string) (models.AccountModel, error){
