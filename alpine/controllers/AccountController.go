@@ -3,14 +3,15 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"./interfaces"
+
 	"./helpers"
+	"./interfaces"
 	"github.com/go-chi/chi"
 )
 
 type AccountController struct {
 	AccountService interfaces.IAccountService
-	AccountHelper helpers.AccountHelper
+	AccountHelper  helpers.AccountHelper
 }
 
 func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +19,11 @@ func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.R
 	accountID := chi.URLParam(r, "accountid")
 
 	fmt.Fprint(w, "GET "+accountID)
+
+	user, err := controller.AccountService.GetAccount(accountID)
+	if err != nil {
+		// Handle error
+	}
 
 	/*
 		sa := option.WithCredentialsFile("./serviceAccountKey.json")

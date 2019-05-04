@@ -1,12 +1,16 @@
-packages models
+package models
 
-import time
+import (
+	"time"
+)
 
 type AccountModel struct {
-	AccountStateID int
-	AccountTypeID int
-	Closed time.Time
-	Created time.Time
-	Email string
-	LastConnection time.Time
+	Email              string
+	Token              int
+	Closed             time.Time
+	Created            time.Time
+	LastConnection     time.Time
+	NumberOfConnection int
+	Status             int
+	Groups             int
 }
