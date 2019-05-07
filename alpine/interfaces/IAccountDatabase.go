@@ -1,9 +1,9 @@
 package interfaces
 
 import (
-	auth "firebase.google.com/go/auth"
+	firestore "cloud.google.com/go/firestore"
 )
 
 type IAccountDatabase interface {
-	GetClientConnection() *auth.Client
+	GetClientConnection() firestore.Client
 }

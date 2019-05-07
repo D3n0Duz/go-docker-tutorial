@@ -5,12 +5,12 @@ import (
 	"log"
 
 	firebase "firebase.google.com/go"
-	auth "firebase.google.com/go/auth"
+	firestore "cloud.google.com/go/firestore"
 	"google.golang.org/api/option"
 )
 
 type AccountDatabase struct {
-	client *auth.Client
+	client firestore.Client
 }
 
 func (nosql *AccountDatabase) InitDatabase() error {
@@ -27,12 +27,14 @@ func (nosql *AccountDatabase) InitDatabase() error {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer client.Close()
 
+	// Uncomment will close the connection at the end of the method. We want to avoid this for now...
+	//defer client.Close()
+
+	nosql.client = *client
 	return err
 }
 
-func (nosql *AccountDatabase) GetClientConnection() *auth.Client {
-	nosql.client.Collection("accounts").Doc(accountid).Get(ctx)
+func (nosql *AccountDatabase) GetClientConnection() firestore.Client {
 	return nosql.client
 }

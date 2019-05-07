@@ -12,7 +12,7 @@ RUN go get firebase.google.com/go; \
     go get github.com/go-chi/chi; \
     go get github.com/go-chi/chi; \
     go get google.golang.org/api/iterator; \
-    go get firebase.google.com/go/auth;
+    go get cloud.google.com/go/firestore;
 
 COPY . ${GOPATH}/go-rest-api
 WORKDIR $GOPATH/go-rest-api

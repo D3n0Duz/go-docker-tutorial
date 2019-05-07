@@ -22,7 +22,7 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	doc, err := client.Collection("accounts").Doc(accountid).Get(ctx)
 
 	if err != nil {
-		fmt.Println(doc.Data())
+		fmt.Println(err)
 		return models.AccountModel{}, nil
 	}
 
