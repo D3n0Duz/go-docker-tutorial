@@ -1,35 +1,26 @@
 package repositories
 
 import (
-	"../models"
-	firebase "firebase.google.com/go"
-	"google.golang.org/api/option"
 	"context"
-	"log"
 	"encoding/json"
 	"fmt"
+
+	"../interfaces"
+	"../models"
 )
 
 type AccountRepository struct {
+	AccountDatabase interfaces.IAccountDatabase
 }
 
-func (repository *AccountRepository) GetAccount(accountid string) (models.AccountModel, error){
-	
-	sa := option.WithCredentialsFile("./serviceAccountKey.json")
-	ctx := context.Background()
-	app, err := firebase.NewApp(ctx, nil, sa)
-	if err != nil {
-		log.Fatalln(err)
-	}
+func (repository *AccountRepository) GetAccount(accountid string) (models.AccountModel, error) {
 
-	client, err := app.Firestore(ctx)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer client.Close()
+	client := repository.AccountDatabase.GetClientConnection()
+
+	ctx := context.Background()
 
 	doc, err := client.Collection("accounts").Doc(accountid).Get(ctx)
-	
+
 	if err != nil {
 		fmt.Println(doc.Data())
 		return models.AccountModel{}, nil
@@ -43,14 +34,14 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	return data, nil
 }
 
-func (repository *AccountRepository) PostAccount(accountid string) (models.AccountModel, error){
+func (repository *AccountRepository) PostAccount(accountid string) (models.AccountModel, error) {
 	return models.AccountModel{}, nil
 }
 
-func (repository *AccountRepository) PutAccount(accountid string) (models.AccountModel, error){
+func (repository *AccountRepository) PutAccount(accountid string) (models.AccountModel, error) {
 	return models.AccountModel{}, nil
 }
 
-func (repository *AccountRepository) DeleteAccount(accountid string) (models.AccountModel, error){
+func (repository *AccountRepository) DeleteAccount(accountid string) (models.AccountModel, error) {
 	return models.AccountModel{}, nil
 }

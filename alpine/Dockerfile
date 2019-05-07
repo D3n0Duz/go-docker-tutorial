@@ -11,7 +11,8 @@ RUN go get firebase.google.com/go; \
     go get google.golang.org/api/option; \
     go get github.com/go-chi/chi; \
     go get github.com/go-chi/chi; \
-    go get google.golang.org/api/iterator;
+    go get google.golang.org/api/iterator; \
+    go get firebase.google.com/go/auth;
 
 COPY . ${GOPATH}/go-rest-api
 WORKDIR $GOPATH/go-rest-api

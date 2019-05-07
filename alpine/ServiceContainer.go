@@ -4,9 +4,9 @@ import (
 	"sync"
 
 	"./controllers"
+	"./infrastructures"
 	"./repositories"
 	"./services"
-	
 )
 
 type IServiceContainer interface {
@@ -16,11 +16,12 @@ type IServiceContainer interface {
 type kernel struct{}
 
 func (k *kernel) InjectAccountController() controllers.AccountController {
-	
-	AccountRepository := &repositories.AccountRepository{}
+
+	AccountDatabase := &infrastructures.AccountDatabase{}
+	AccountDatabase.InitDatabase()
+	AccountRepository := &repositories.AccountRepository{AccountDatabase}
 	AccountService := &services.AccountService{AccountRepository}
 	AccountController := controllers.AccountController{AccountService}
-
 
 	return AccountController
 }
