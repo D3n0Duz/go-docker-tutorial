@@ -7,6 +7,7 @@ import (
 
 	"../interfaces"
 	"../models"
+	"github.com/fatih/structs"
 )
 
 type AccountRepository struct {
@@ -23,7 +24,7 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 
 	if err != nil {
 		fmt.Println(err)
-		return models.AccountModel{}, nil
+		return models.AccountModel{}, fmt.Errorf("failed to retrieved docId : %s", accountid)
 	}
 
 	data := models.AccountModel{}
@@ -34,7 +35,27 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	return data, nil
 }
 
-func (repository *AccountRepository) PostAccount(accountid string) (models.AccountModel, error) {
+func (repository *AccountRepository) PostAccount(account string) (models.AccountModel, error) {
+
+	// client := repository.AccountDatabase.GetClientConnection()
+
+	// ctx := context.Background()
+
+	// accountModel := models.AccountModel{}
+	// fmt.Println(account)
+	// jsonString, _ := json.Marshal(account)
+	// json.Unmarshal(jsonString, &accountModel)
+
+	// accountToAdd := structs.Map(accountModel)
+	// fmt.Println(accountToAdd)
+
+	// _, _, err := client.Collection("accounts").Add(ctx, accountToAdd)
+
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return models.AccountModel{}, err
+	// }
+
 	return models.AccountModel{}, nil
 }
 
