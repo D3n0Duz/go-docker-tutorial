@@ -18,11 +18,16 @@ func (service *AccountService) GetAccount(accountid string) (models.AccountModel
 	return data, nil
 }
 
-func (service *AccountService) PostAccount(accountid string) (models.AccountModel, error){
-	return models.AccountModel{}, nil
+func (service *AccountService) PostAccount(accountModel models.AccountModel) (models.AccountModel, error){
+	data, err := service.AccountRepository.PostAccount(accountModel)
+
+	if err != nil {
+		return models.AccountModel{}, err
+	}
+	return data, nil
 }
 
-func (service *AccountService) PutAccount(accountid string) (models.AccountModel, error){
+func (service *AccountService) PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error){
 	return models.AccountModel{}, nil
 }	
 

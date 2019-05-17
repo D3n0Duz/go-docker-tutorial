@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"../interfaces"
 	"encoding/json"
+	"../models"
 	"github.com/go-chi/chi"
 )
 
@@ -31,18 +32,25 @@ func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.R
 
 func (controller *AccountController) PostAccount(w http.ResponseWriter, r *http.Request) {
 
-	accountID := chi.URLParam(r, "accountid")
-	fmt.Fprint(w, "POST "+accountID)
+	var accountModel models.AccountModel
+	json.NewDecoder(r.Body).Decode(&accountModel)
 
-	
+	account, err := controller.AccountService.PostAccount(accountModel)
+
+	if err != nil {
+		http.Error(w, err.Error(), 404)
+    	return
+	}
+
+	response := account
+
+	json.NewEncoder(w).Encode(response)
 }
 
 func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.Request) {
 
 	accountID := chi.URLParam(r, "accountid")
-	fmt.Fprint(w, "PUT "+accountID)
-
-	
+	fmt.Fprint(w, "PUT "+accountID)	
 }
 
 func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *http.Request) {

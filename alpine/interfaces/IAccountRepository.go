@@ -6,7 +6,7 @@ import (
 
 type IAccountRepository interface {
 	GetAccount(accountid string) (models.AccountModel, error)
-	PostAccount(accountid string) (models.AccountModel, error)
-	PutAccount(accountid string) (models.AccountModel, error)
+	PostAccount(accountModel models.AccountModel) (models.AccountModel, error)
+	PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error)
 	DeleteAccount(accountid string) (models.AccountModel, error)
 }

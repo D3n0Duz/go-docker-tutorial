@@ -23,7 +23,7 @@ func (router *router) InitRouter() *chi.Mux {
 	})
 
 	r.Get("/accounts/{accountid}", accountController.GetAccount)
-	r.Post("/accounts/{accountid}", accountController.PostAccount)
+	r.Post("/accounts", accountController.PostAccount)
 	r.Put("/accounts/{accountid}", accountController.PutAccount)
 	r.Delete("/accounts/{accountid}", accountController.DeleteAccount)
 

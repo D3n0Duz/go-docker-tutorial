@@ -35,31 +35,25 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	return data, nil
 }
 
-func (repository *AccountRepository) PostAccount(account string) (models.AccountModel, error) {
+func (repository *AccountRepository) PostAccount(accountModel models.AccountModel) (models.AccountModel, error) {
 
-	// client := repository.AccountDatabase.GetClientConnection()
+	client := repository.AccountDatabase.GetClientConnection()
 
-	// ctx := context.Background()
+	ctx := context.Background()
 
-	// accountModel := models.AccountModel{}
-	// fmt.Println(account)
-	// jsonString, _ := json.Marshal(account)
-	// json.Unmarshal(jsonString, &accountModel)
+	accountToAdd := structs.Map(accountModel)
 
-	// accountToAdd := structs.Map(accountModel)
-	// fmt.Println(accountToAdd)
+	_, _, err := client.Collection("accounts").Add(ctx, accountToAdd)
 
-	// _, _, err := client.Collection("accounts").Add(ctx, accountToAdd)
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return models.AccountModel{}, err
-	// }
+	if err != nil {
+		fmt.Println(err)
+		return models.AccountModel{}, err
+	}
 
 	return models.AccountModel{}, nil
 }
 
-func (repository *AccountRepository) PutAccount(accountid string) (models.AccountModel, error) {
+func (repository *AccountRepository) PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
 	return models.AccountModel{}, nil
 }
 
