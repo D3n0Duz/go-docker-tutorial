@@ -7,12 +7,19 @@ FROM golang:alpine AS builder
 # Git is required for fetching the dependencies.
 RUN apk add ca-certificates && apk update && apk add --no-cache git
 RUN mkdir -p ${GOPATH}/go-rest-api;
+RUN go get firebase.google.com/go; \
+    go get google.golang.org/api/option; \
+    go get github.com/go-chi/chi; \
+    go get github.com/go-chi/chi; \
+    go get google.golang.org/api/iterator; \
+    go get cloud.google.com/go/firestore; \
+    go get github.com/fatih/structs;
 
 COPY . ${GOPATH}/go-rest-api
 WORKDIR $GOPATH/go-rest-api
 
 # Using go get.
-RUN go get -d -v ./...
+# RUN go get -d -v ./...
 
 # Build the binary.
 RUN go build -o app .

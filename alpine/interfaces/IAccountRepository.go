@@ -4,7 +4,7 @@ import (
 	"../models"
 )
 
-type IAccountService interface {
+type IAccountRepository interface {
 	GetAccount(accountid string) (models.AccountModel, error)
 	PostAccount(accountModel models.AccountModel) (models.AccountModel, error)
 	PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error)
