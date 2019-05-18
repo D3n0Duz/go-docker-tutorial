@@ -49,8 +49,20 @@ func (controller *AccountController) PostAccount(w http.ResponseWriter, r *http.
 
 func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.Request) {
 
+	var accountModel models.AccountModel
+	json.NewDecoder(r.Body).Decode(&accountModel)
 	accountID := chi.URLParam(r, "accountid")
-	fmt.Fprint(w, "PUT "+accountID)	
+
+	account, err := controller.AccountService.PutAccount(accountID, accountModel)
+
+	if err != nil {
+		http.Error(w, err.Error(), 404)
+    	return
+	}
+
+	response := account
+
+	json.NewEncoder(w).Encode(response)
 }
 
 func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *http.Request) {

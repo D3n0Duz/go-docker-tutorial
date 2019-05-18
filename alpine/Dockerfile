@@ -10,7 +10,7 @@ RUN mkdir -p ${GOPATH}/go-rest-api;
 RUN go get firebase.google.com/go; \
     go get google.golang.org/api/option; \
     go get github.com/go-chi/chi; \
-    go get github.com/go-chi/chi; \
+    go get github.com/rs/xid; \
     go get google.golang.org/api/iterator; \
     go get cloud.google.com/go/firestore; \
     go get github.com/fatih/structs;
