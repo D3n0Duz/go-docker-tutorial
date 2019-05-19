@@ -35,26 +35,22 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	return data, nil
 }
 
-func (repository *AccountRepository) PostAccount(accountModel models.AccountModel) (models.AccountModel, error) {
-
+func (repository *AccountRepository) CreateOrUpdateAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
+	
 	client := repository.AccountDatabase.GetClientConnection()
 
 	ctx := context.Background()
 
 	accountToAdd := structs.Map(accountModel)
 
-	_, _, err := client.Collection("accounts").Add(ctx, accountToAdd)
+	_, err := client.Collection("accounts").Doc(accountid).Set(ctx, accountToAdd)
 
 	if err != nil {
 		fmt.Println(err)
 		return models.AccountModel{}, err
 	}
 
-	return models.AccountModel{}, nil
-}
-
-func (repository *AccountRepository) PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
-	return models.AccountModel{}, nil
+	return accountModel, nil
 }
 
 func (repository *AccountRepository) DeleteAccount(accountid string) (models.AccountModel, error) {

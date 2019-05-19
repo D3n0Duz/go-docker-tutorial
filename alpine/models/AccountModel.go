@@ -5,6 +5,7 @@ import (
 )
 
 type AccountModel struct {
+	AccountId string
 	AccountStateID int
 	AccountTypeID int
 	Closed time.Time
