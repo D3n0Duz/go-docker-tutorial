@@ -10,6 +10,8 @@ import (
 	"github.com/fatih/structs"
 )
 
+const collection string = "accounts"
+
 type AccountRepository struct {
 	AccountDatabase interfaces.IAccountDatabase
 }
@@ -20,7 +22,7 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 
 	ctx := context.Background()
 
-	doc, err := client.Collection("accounts").Doc(accountid).Get(ctx)
+	doc, err := client.Collection(collection).Doc(accountid).Get(ctx)
 
 	if err != nil {
 		fmt.Println(err)
@@ -43,7 +45,7 @@ func (repository *AccountRepository) CreateOrUpdateAccount(accountid string, acc
 
 	accountToAdd := structs.Map(accountModel)
 
-	_, err := client.Collection("accounts").Doc(accountid).Set(ctx, accountToAdd)
+	_, err := client.Collection(collection).Doc(accountid).Set(ctx, accountToAdd)
 
 	if err != nil {
 		fmt.Println(err)
@@ -53,6 +55,17 @@ func (repository *AccountRepository) CreateOrUpdateAccount(accountid string, acc
 	return accountModel, nil
 }
 
-func (repository *AccountRepository) DeleteAccount(accountid string) (models.AccountModel, error) {
-	return models.AccountModel{}, nil
+func (repository *AccountRepository) DeleteAccount(accountid string) error {
+	
+	client := repository.AccountDatabase.GetClientConnection()
+
+	ctx := context.Background()
+
+	_, err := client.Collection(collection).Doc(accountid).Delete(ctx)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
 }
