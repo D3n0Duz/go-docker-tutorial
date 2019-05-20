@@ -67,8 +67,15 @@ func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.R
 
 func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 
+	
 	accountID := chi.URLParam(r, "accountid")
+	
+	err := controller.AccountService.DeleteAccount(accountID)
 
-	fmt.Fprint(w, "DELETE "+accountID)
+	if err != nil {
+		http.Error(w, err.Error(), 404)
+    	return
+	}
 
+	fmt.Fprint(w, "Deleted account : "+accountID)
 }

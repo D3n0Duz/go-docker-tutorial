@@ -39,7 +39,6 @@ func (service *AccountService) PutAccount(accountid string, accountModel models.
 	}
 	return data, nil
 }	
-
-func (service *AccountService) DeleteAccount(accountid string) (models.AccountModel, error){
-	return models.AccountModel{}, nil
+func (service *AccountService) DeleteAccount(accountid string) error{
+	return service.AccountRepository.DeleteAccount(accountid)
 }
