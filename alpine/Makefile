@@ -1,4 +1,6 @@
 build:
-	sudo docker build -t docker-go-test .
+	sudo docker-compose build
 run:
-	sudo docker run -p 8080:8080 --rm docker-go-test:latest
+	sudo docker-compose up -d
+stop: 
+	sudo docker-compose down
