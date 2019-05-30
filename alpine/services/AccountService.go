@@ -23,7 +23,7 @@ func (service *AccountService) PostAccount(accountModel models.AccountModel) (mo
 
 	id := xid.New()
 	accountModel.AccountId = id.String()
-	data, err := service.AccountRepository.CreateOrUpdateAccount(accountModel.AccountId, accountModel)
+	data, err := service.AccountRepository.AddAccount(accountModel.AccountId, accountModel)
 
 	if err != nil {
 		return models.AccountModel{}, err
@@ -32,7 +32,7 @@ func (service *AccountService) PostAccount(accountModel models.AccountModel) (mo
 }
 
 func (service *AccountService) PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error){
-	data, err := service.AccountRepository.CreateOrUpdateAccount(accountid, accountModel)
+	data, err := service.AccountRepository.UpdateAccount(accountid, accountModel)
 
 	if err != nil {
 		return models.AccountModel{}, err

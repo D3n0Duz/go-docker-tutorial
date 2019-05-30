@@ -37,7 +37,25 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	return data, nil
 }
 
-func (repository *AccountRepository) CreateOrUpdateAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
+func (repository *AccountRepository) AddAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
+	
+	client := repository.AccountDatabase.GetClientConnection()
+
+	ctx := context.Background()
+
+	accountToAdd := structs.Map(accountModel)
+
+	_, err := client.Collection(collection).Doc(accountid).Set(ctx, accountToAdd)
+
+	if err != nil {
+		fmt.Println(err)
+		return models.AccountModel{}, err
+	}
+
+	return accountModel, nil
+}
+
+func (repository *AccountRepository) UpdateAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
 	
 	client := repository.AccountDatabase.GetClientConnection()
 
