@@ -16,7 +16,7 @@ type AccountRepository struct {
 	AccountDatabase interfaces.IAccountDatabase
 }
 
-func (repository *AccountRepository) GetAccount(accountid string) (models.AccountModel, error) {
+func (repository *AccountRepository) GetAccount(accountid string) (models.AccountModel, models.Errors) {
 
 	client := repository.AccountDatabase.GetClientConnection()
 
@@ -25,8 +25,7 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	doc, err := client.Collection(collection).Doc(accountid).Get(ctx)
 
 	if err != nil {
-		fmt.Println(err)
-		return models.AccountModel{}, fmt.Errorf("failed to retrieved docId : %s", accountid)
+		return models.AccountModel{}, models.Errors{"failed to retrieved document: " + accountid, 400}
 	}
 
 	data := models.AccountModel{}
@@ -34,10 +33,10 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	jsonString, _ := json.Marshal(doc.Data())
 	json.Unmarshal(jsonString, &data)
 
-	return data, nil
+	return data, models.Errors{}
 }
 
-func (repository *AccountRepository) AddAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
+func (repository *AccountRepository) AddAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors) {
 	
 	client := repository.AccountDatabase.GetClientConnection()
 
@@ -49,13 +48,13 @@ func (repository *AccountRepository) AddAccount(accountid string, accountModel m
 
 	if err != nil {
 		fmt.Println(err)
-		return models.AccountModel{}, err
+		return models.AccountModel{}, models.Errors{err.Error(), 400}
 	}
 
-	return accountModel, nil
+	return accountModel, models.Errors{}
 }
 
-func (repository *AccountRepository) UpdateAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error) {
+func (repository *AccountRepository) UpdateAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors) {
 	
 	client := repository.AccountDatabase.GetClientConnection()
 
@@ -67,13 +66,13 @@ func (repository *AccountRepository) UpdateAccount(accountid string, accountMode
 
 	if err != nil {
 		fmt.Println(err)
-		return models.AccountModel{}, err
+		return models.AccountModel{}, models.Errors{err.Error(), 400}
 	}
 
-	return accountModel, nil
+	return accountModel, models.Errors{}
 }
 
-func (repository *AccountRepository) DeleteAccount(accountid string) error {
+func (repository *AccountRepository) DeleteAccount(accountid string) models.Errors {
 	
 	client := repository.AccountDatabase.GetClientConnection()
 
@@ -82,8 +81,8 @@ func (repository *AccountRepository) DeleteAccount(accountid string) error {
 	_, err := client.Collection(collection).Doc(accountid).Delete(ctx)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return models.Errors{err.Error(), 400}
 	}
 
-	return nil
+	return models.Errors{}
 }

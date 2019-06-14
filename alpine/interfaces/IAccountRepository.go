@@ -5,8 +5,8 @@ import (
 )
 
 type IAccountRepository interface {
-	GetAccount(accountid string) (models.AccountModel, error)
-	AddAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error)
-	UpdateAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error)
-	DeleteAccount(accountid string) error
+	GetAccount(accountid string) (models.AccountModel, models.Errors)
+	AddAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors)
+	UpdateAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors)
+	DeleteAccount(accountid string) models.Errors
 }

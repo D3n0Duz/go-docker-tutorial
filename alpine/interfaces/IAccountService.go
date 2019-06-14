@@ -5,8 +5,8 @@ import (
 )
 
 type IAccountService interface {
-	GetAccount(accountid string) (models.AccountModel, error)
-	PostAccount(accountModel models.AccountModel) (models.AccountModel, error)
-	PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error)
-	DeleteAccount(accountid string)  error
+	GetAccount(accountid string) (models.AccountModel, models.Errors)
+	PostAccount(accountModel models.AccountModel) (models.AccountModel, models.Errors)
+	PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors)
+	DeleteAccount(accountid string)  models.Errors
 }
