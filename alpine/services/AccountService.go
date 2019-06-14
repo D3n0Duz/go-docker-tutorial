@@ -4,7 +4,6 @@ import (
 	"../interfaces"
 	"../models"
 	"github.com/rs/xid"
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -18,46 +17,50 @@ type AccountService struct {
 	AccountRepository interfaces.IAccountRepository
 }
 
-func (service *AccountService) GetAccount(accountid string) (models.AccountModel, error){
+func (service *AccountService) GetAccount(accountid string) (models.AccountModel, models.Errors){
 	data, err := service.AccountRepository.GetAccount(accountid)
 
-	if err != nil {
+	if err.Code() != 0{
 		return models.AccountModel{}, err
 	}
-	return data, nil
+	return data, models.Errors{}
 }
 
-func (service *AccountService) PostAccount(accountModel models.AccountModel) (models.AccountModel, error){
+func (service *AccountService) PostAccount(accountModel models.AccountModel) (models.AccountModel, models.Errors){
 
 	id := xid.New()
 	accountModel.AccountId = id.String()
 	if !isFieldValid(accountModel){
-		return models.AccountModel{}, errors.New("Invalid accountModel")
+		return models.AccountModel{}, models.Errors{"Invalid accountModel", 400}
 	}
 	
 	data, err := service.AccountRepository.AddAccount(accountModel.AccountId, accountModel)
 
-	if err != nil {
+	if err.Code() != 0{
 		return models.AccountModel{}, err
 	}
-	return data, nil
+	return data, models.Errors{}
 }
 
-func (service *AccountService) PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, error){
+func (service *AccountService) PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors){
 	
 	errIsValid := service.isValid(accountid, accountModel)
-	if errIsValid != nil{
-		return models.AccountModel{}, errors.New("Invalid AccountModel provided")
+	if errIsValid.Code() != 0{
+		return models.AccountModel{}, errIsValid
 	}
 
 	data, err := service.AccountRepository.UpdateAccount(accountid, accountModel)
 
-	if err != nil {
+	if err.Code() != 0{
 		return models.AccountModel{}, err
 	}
-	return data, nil
+	return data, models.Errors{}
 }	
-func (service *AccountService) DeleteAccount(accountid string) error{
+func (service *AccountService) DeleteAccount(accountid string) models.Errors{
+	_, err := service.GetAccount(accountid)
+	if err.Code() != 0{
+		return err
+	}
 	return service.AccountRepository.DeleteAccount(accountid)
 }
 
@@ -69,17 +72,17 @@ func isFieldValid (accountModel models.AccountModel) bool{
 }
 
 
-func (service *AccountService) isValid(accountid string, accountModel models.AccountModel) error{
+func (service *AccountService) isValid(accountid string, accountModel models.AccountModel) models.Errors{
 	data, err := service.GetAccount(accountid)
-	if err != nil{
+	if err.Code() != 0{
 		return err
 	}
 
 	if data.Email != accountModel.Email{
 		errMessage := "Email does not match"
 		fmt.Println(errMessage)
-		return errors.New(errMessage)
+		return models.Errors{errMessage, 400}
 	}
 
-	return nil
+	return models.Errors{}
 }

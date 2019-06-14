@@ -28,8 +28,8 @@ func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.R
 
 	account, err := controller.AccountService.GetAccount(accountID)
 
-	if err != nil {
-		http.Error(w, err.Error(), 404)
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
     	return
 	}
 
@@ -49,8 +49,8 @@ func (controller *AccountController) PostAccount(w http.ResponseWriter, r *http.
 
 	account, err := controller.AccountService.PostAccount(accountModel)
 
-	if err != nil {
-		http.Error(w, err.Error(), 404)
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
     	return
 	}
 
@@ -70,8 +70,8 @@ func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.R
 
 	account, err := controller.AccountService.PutAccount(accountID, accountModel)
 
-	if err != nil {
-		http.Error(w, err.Error(), 404)
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
     	return
 	}
 
@@ -89,8 +89,8 @@ func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *htt
 	
 	err := controller.AccountService.DeleteAccount(accountID)
 
-	if err != nil {
-		http.Error(w, err.Error(), 404)
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
     	return
 	}
 
