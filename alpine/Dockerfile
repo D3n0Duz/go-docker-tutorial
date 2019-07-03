@@ -31,7 +31,7 @@ RUN go build -o app .
 FROM alpine:latest
 
 # Add ca certificates
-RUN apk add ca-certificates
+RUN apk --no-cache add ca-certificates
 
 # Copy our static executable.
 COPY --from=builder /go/go-rest-api .
