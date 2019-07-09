@@ -4,18 +4,18 @@ import (
 	"../interfaces"
 	"../models"
 	"github.com/rs/xid"
-	"fmt"
-	"regexp"
-	"strconv"
 )
-const emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
-const dateRegex = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
-const typeIdRegex = "^[1-3]{1}$"
-const stateIdRegex = "^[1-3]{1}$"
+
 
 type AccountService struct {
 	AccountRepository interfaces.IAccountRepository
+	AccountTypeRepository interfaces.IAccountTypeRepository
+	AccountStateRepository interfaces.IAccountStateRepository
+	ValidatorService interfaces.IValidatorService
 }
+
+const DefaultAccountTypeName = "Basic"
+const DefaultAccountStateName = "Active"
 
 func (service *AccountService) GetAccount(accountid string) (models.AccountModel, models.Errors){
 	data, err := service.AccountRepository.GetAccount(accountid)
@@ -26,11 +26,49 @@ func (service *AccountService) GetAccount(accountid string) (models.AccountModel
 	return data, models.Errors{}
 }
 
+func (service *AccountService) GetAccountType(accountid string) (models.AccountTypeModel, models.Errors){
+	data, err := service.GetAccount(accountid)
+
+	if err.Code() != 0{
+		return models.AccountTypeModel{}, err
+	}
+
+	accountType, errType := service.AccountTypeRepository.GetAccountType(data.AccountTypeId)
+
+	if errType.Code() != 0{
+		return models.AccountTypeModel{}, errType
+	}
+
+	return accountType, models.Errors{}
+}
+
+func (service *AccountService) GetAccountState(accountid string) (models.AccountStateModel, models.Errors){
+	data, err := service.GetAccount(accountid)
+
+	if err.Code() != 0{
+		return models.AccountStateModel{}, err
+	}
+
+	accountState, errState := service.AccountStateRepository.GetAccountState(data.AccountStateId)
+
+	if errState.Code() != 0{
+		return models.AccountStateModel{}, errState
+	}
+
+	return accountState, models.Errors{}
+}
+
 func (service *AccountService) PostAccount(accountModel models.AccountModel) (models.AccountModel, models.Errors){
 
-	id := xid.New()
-	accountModel.AccountId = id.String()
-	if !isFieldValid(accountModel){
+	accountModel.AccountId = xid.New().String()
+	if accountModel.AccountTypeId == ""{
+		accountModel.AccountTypeId = xid.New().String()
+	}
+	if accountModel.AccountStateId == ""{
+		accountModel.AccountStateId = xid.New().String()
+	}
+		
+	if !service.ValidatorService.IsFieldValid(accountModel){
 		return models.AccountModel{}, models.Errors{"Invalid accountModel", 400}
 	}
 	
@@ -39,12 +77,30 @@ func (service *AccountService) PostAccount(accountModel models.AccountModel) (mo
 	if err.Code() != 0{
 		return models.AccountModel{}, err
 	}
+
+	accountModelType :=models.AccountTypeModel{DefaultAccountTypeName, accountModel.AccountTypeId}
+	_, errType := service.AccountTypeRepository.AddAccountType(accountModel.AccountTypeId, accountModelType)
+	if errType.Code() != 0{
+		return models.AccountModel{}, errType
+	}
+
+	accountModelState :=models.AccountStateModel{DefaultAccountStateName, accountModel.AccountStateId}
+	_, errState := service.AccountStateRepository.AddAccountState(accountModel.AccountStateId, accountModelState)
+	if errState.Code() != 0{
+		return models.AccountModel{}, errState
+	}
+
 	return data, models.Errors{}
 }
 
 func (service *AccountService) PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors){
 	
-	errIsValid := service.isValid(accountid, accountModel)
+	accountModelDb, err := service.GetAccount(accountid)
+	if err.Code() != 0{
+		return models.AccountModel{}, err
+	}
+
+	errIsValid := service.ValidatorService.IsValid(accountModelDb, accountModel)
 	if errIsValid.Code() != 0{
 		return models.AccountModel{}, errIsValid
 	}
@@ -64,25 +120,3 @@ func (service *AccountService) DeleteAccount(accountid string) models.Errors{
 	return service.AccountRepository.DeleteAccount(accountid)
 }
 
-func isFieldValid (accountModel models.AccountModel) bool{
-	emailMatch, _ := regexp.MatchString(emailRegex, accountModel.Email)
-	accountStateIDMatch, _ := regexp.MatchString(stateIdRegex, strconv.Itoa(accountModel.AccountStateID))
-	accountTypeIDMatch, _ := regexp.MatchString(typeIdRegex, strconv.Itoa(accountModel.AccountTypeID))
-	return emailMatch && accountStateIDMatch && accountTypeIDMatch
-}
-
-
-func (service *AccountService) isValid(accountid string, accountModel models.AccountModel) models.Errors{
-	data, err := service.GetAccount(accountid)
-	if err.Code() != 0{
-		return err
-	}
-
-	if data.Email != accountModel.Email{
-		errMessage := "Email does not match"
-		fmt.Println(errMessage)
-		return models.Errors{errMessage, 400}
-	}
-
-	return models.Errors{}
-}

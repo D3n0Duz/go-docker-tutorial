@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"../interfaces"
 	"encoding/json"
@@ -23,6 +22,42 @@ func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.R
 	accountID := chi.URLParam(r, "accountid")
 
 	account, err := controller.AccountService.GetAccount(accountID)
+
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
+    	return
+	}
+
+	json.NewEncoder(w).Encode(account)
+}
+
+func (controller *AccountController) GetAccountType(w http.ResponseWriter, r *http.Request) {
+
+	if !controller.ValidatorService.VerifyToken(r, w) {
+		return // No valid token found
+	}
+
+	accountID := chi.URLParam(r, "accountid")
+
+	account, err := controller.AccountService.GetAccountType(accountID)
+
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
+    	return
+	}
+
+	json.NewEncoder(w).Encode(account)
+}
+
+func (controller *AccountController) GetAccountState(w http.ResponseWriter, r *http.Request) {
+
+	if !controller.ValidatorService.VerifyToken(r, w) {
+		return // No valid token found
+	}
+
+	accountID := chi.URLParam(r, "accountid")
+
+	account, err := controller.AccountService.GetAccountState(accountID)
 
 	if err.Code() != 0{
 		http.Error(w, err.Error(), err.Code())
@@ -84,6 +119,6 @@ func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *htt
     	return
 	}
 
-	fmt.Fprint(w, "Deleted account : "+accountID)
+	
 	json.NewEncoder(w).Encode("Deleted account : "+accountID)
 }

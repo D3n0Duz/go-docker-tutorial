@@ -9,4 +9,7 @@ type IAccountService interface {
 	PostAccount(accountModel models.AccountModel) (models.AccountModel, models.Errors)
 	PutAccount(accountid string, accountModel models.AccountModel) (models.AccountModel, models.Errors)
 	DeleteAccount(accountid string)  models.Errors
+
+	GetAccountType(accountid string) (models.AccountTypeModel, models.Errors)
+	GetAccountState(accountid string) (models.AccountStateModel, models.Errors)
 }
