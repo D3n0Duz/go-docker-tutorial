@@ -15,7 +15,7 @@ type AccountService struct {
 }
 
 const DefaultAccountTypeName = "Basic"
-const DefaultAccountStateName = "Active"
+const DefaultAccountStateName = "Inactive"
 
 func (service *AccountService) GetAccount(accountid string) (models.AccountModel, models.Errors){
 	data, err := service.AccountRepository.GetAccount(accountid)
