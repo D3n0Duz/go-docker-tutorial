@@ -55,23 +55,19 @@ func (repository *AccountStateRepository) AddAccountState(accountid string, acco
 	return accountStateModel, models.Errors{}
 }
 
-func (repository *AccountStateRepository) UpdateAccountState(accountid string, accountStateModel models.AccountStateModel) (models.AccountStateModel, models.Errors) {
-	// TODO LATER
+func (repository *AccountStateRepository) UpdateAccountState(accountStateId string, accountStateModel models.AccountStateModel) (models.AccountStateModel, models.Errors) {
 
-	// client := repository.AccountDatabase.GetClientConnection()
+	client := repository.AccountDatabase.GetClientConnection()
 
-	// ctx := context.Background()
+	ctx := context.Background()
 
-	// accountToAdd := structs.Map(accountStateModel)
+	accountToAdd := structs.Map(accountStateModel)
 
-	// _, err := client.Collection(collectionAccountState).Doc(accountid).Set(ctx, accountToAdd)
+	_, err := client.Collection(collectionAccountState).Doc(accountStateId).Set(ctx, accountToAdd)
 
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return models.AccountStateModel{}, models.Errors{err.Error(), 400}
-	// }
+	if err != nil {
+		return models.AccountStateModel{}, models.Errors{err.Error(), 400}
+	}
 
-	// return accountStateModel, models.Errors{}
-
-	return models.AccountStateModel{}, models.Errors{}
+	return accountStateModel, models.Errors{}
 }

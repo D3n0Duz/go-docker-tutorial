@@ -36,6 +36,7 @@ func (router *router) InitRouter() *chi.Mux {
 	
 	r.Get("/accounts/{accountid}/types", accountController.GetAccountType)
 	r.Get("/accounts/{accountid}/states", accountController.GetAccountState)
+	r.Put("/accounts/{accountid}/states", accountController.PutAccountState)
 	//r.Put("/accounts/{accountid}/types/{accountTypeId}", accountTypeController.PutAccount) TODO later
 
 	return r

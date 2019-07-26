@@ -105,6 +105,25 @@ func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.R
 	json.NewEncoder(w).Encode(account)
 }
 
+func (controller *AccountController) PutAccountState(w http.ResponseWriter, r *http.Request) {
+	if !controller.ValidatorService.VerifyToken(r, w) {
+		return // No valid token found
+	}
+
+	var accountStateModel models.AccountStateModel
+	json.NewDecoder(r.Body).Decode(&accountStateModel)
+	accountID := chi.URLParam(r, "accountid")
+
+	account, err := controller.AccountService.PutAccountState(accountID, accountStateModel)
+
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
+    	return
+	}
+
+	json.NewEncoder(w).Encode(account)
+}
+
 func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	if !controller.ValidatorService.VerifyToken(r, w) {
 		return // No valid token found
