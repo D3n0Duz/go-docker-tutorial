@@ -6,8 +6,8 @@ import (
 
 type AccountModel struct {
 	AccountId string
-	AccountStateID int
-	AccountTypeID int
+	AccountStateId string
+	AccountTypeId string
 	Closed time.Time
 	Created time.Time
 	Email string

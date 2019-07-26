@@ -25,6 +25,7 @@ func (repository *AccountRepository) GetAccount(accountid string) (models.Accoun
 	doc, err := client.Collection(collection).Doc(accountid).Get(ctx)
 
 	if err != nil {
+		fmt.Println(err)
 		return models.AccountModel{}, models.Errors{"failed to retrieved document: " + accountid, 400}
 	}
 

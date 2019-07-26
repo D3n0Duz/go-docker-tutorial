@@ -4,24 +4,26 @@ import (
 	"sync"
 
 	"./controllers"
-	"./infrastructures"
 	"./repositories"
 	"./services"
+	"./interfaces"
 )
 
 type IServiceContainer interface {
 	InjectAccountController() controllers.AccountController
 }
 
-type kernel struct{}
+type kernel struct{
+	AccountDatabase interfaces.IAccountDatabase
+	ValidatorService interfaces.IValidatorService
+}
 
 func (k *kernel) InjectAccountController() controllers.AccountController {
-
-	AccountDatabase := &infrastructures.AccountDatabase{}
-	AccountDatabase.InitDatabase()
-	AccountRepository := &repositories.AccountRepository{AccountDatabase}
-	AccountService := &services.AccountService{AccountRepository}
-	AccountController := controllers.AccountController{AccountService}
+	AccountRepository := &repositories.AccountRepository{k.AccountDatabase}
+	AccountTypeRepository := &repositories.AccountTypeRepository{k.AccountDatabase}
+	AccountStateRepository := &repositories.AccountStateRepository{k.AccountDatabase}
+	AccountService := &services.AccountService{AccountRepository, AccountTypeRepository, AccountStateRepository, k.ValidatorService}
+	AccountController := controllers.AccountController{AccountService, k.ValidatorService}
 
 	return AccountController
 }

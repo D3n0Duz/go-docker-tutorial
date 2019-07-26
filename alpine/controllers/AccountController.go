@@ -1,26 +1,21 @@
 package controllers
 
 import (
-	"fmt"
-	"strings"
 	"net/http"
 	"../interfaces"
 	"encoding/json"
 	"../models"
 	"github.com/go-chi/chi"
-	"github.com/dgrijalva/jwt-go"
 )
 
 type AccountController struct {
 	AccountService interfaces.IAccountService
-
+	ValidatorService interfaces.IValidatorService
 }
-
-const jwtKey = "YOUR_JWT_KEY" // TODO : get key from Vault
 
 func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.Request) {
 
-	if !VerifyToken(r, w) {
+	if !controller.ValidatorService.VerifyToken(r, w) {
 		return // No valid token found
 	}
 
@@ -33,14 +28,48 @@ func (controller *AccountController) GetAccount(w http.ResponseWriter, r *http.R
     	return
 	}
 
-	response := account
+	json.NewEncoder(w).Encode(account)
+}
 
-	json.NewEncoder(w).Encode(response)
+func (controller *AccountController) GetAccountType(w http.ResponseWriter, r *http.Request) {
+
+	if !controller.ValidatorService.VerifyToken(r, w) {
+		return // No valid token found
+	}
+
+	accountID := chi.URLParam(r, "accountid")
+
+	account, err := controller.AccountService.GetAccountType(accountID)
+
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
+    	return
+	}
+
+	json.NewEncoder(w).Encode(account)
+}
+
+func (controller *AccountController) GetAccountState(w http.ResponseWriter, r *http.Request) {
+
+	if !controller.ValidatorService.VerifyToken(r, w) {
+		return // No valid token found
+	}
+
+	accountID := chi.URLParam(r, "accountid")
+
+	account, err := controller.AccountService.GetAccountState(accountID)
+
+	if err.Code() != 0{
+		http.Error(w, err.Error(), err.Code())
+    	return
+	}
+
+	json.NewEncoder(w).Encode(account)
 }
 
 func (controller *AccountController) PostAccount(w http.ResponseWriter, r *http.Request) {
 
-	if !VerifyToken(r, w) {
+	if !controller.ValidatorService.VerifyToken(r, w) {
 		return // No valid token found
 	}
 
@@ -54,13 +83,11 @@ func (controller *AccountController) PostAccount(w http.ResponseWriter, r *http.
     	return
 	}
 
-	response := account
-
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(account)
 }
 
 func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.Request) {
-	if !VerifyToken(r, w) {
+	if !controller.ValidatorService.VerifyToken(r, w) {
 		return // No valid token found
 	}
 
@@ -75,13 +102,11 @@ func (controller *AccountController) PutAccount(w http.ResponseWriter, r *http.R
     	return
 	}
 
-	response := account
-
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(account)
 }
 
 func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *http.Request) {
-	if !VerifyToken(r, w) {
+	if !controller.ValidatorService.VerifyToken(r, w) {
 		return // No valid token found
 	}
 	
@@ -94,29 +119,6 @@ func (controller *AccountController) DeleteAccount(w http.ResponseWriter, r *htt
     	return
 	}
 
-	fmt.Fprint(w, "Deleted account : "+accountID)
-}
-
-// TODO create abstract class that can do that validation then go to the rest API calls
-func VerifyToken(r *http.Request, w http.ResponseWriter) bool {
-
-	reqToken := r.Header.Get("Authorization")
-	splitToken := strings.Split(reqToken, "Bearer")
-	if len(splitToken) != 2 {
-		http.Error(w, "Permission denied", 401)
-    	return false
-	}
-
-	reqToken = strings.TrimSpace(splitToken[1])
-
-    token, err := jwt.Parse(reqToken, func(t *jwt.Token) (interface{}, error) {
-        return []byte(jwtKey), nil
-    })
-    if err == nil && token.Valid {
-        fmt.Println("valid token found")
-        return true
-    } else {
-        http.Error(w, "Permission denied", 401)
-        return false
-    }
+	
+	json.NewEncoder(w).Encode("Deleted account : "+accountID)
 }
