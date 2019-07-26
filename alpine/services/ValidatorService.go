@@ -17,6 +17,7 @@ const emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+
 const dateRegex = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
 const typeIdRegex = "^[a-zA-Z0-9]{20}$"
 const stateIdRegex = "^[a-zA-Z0-9]{20}$"
+const stateNameRegex = "(.*?)"
 
 func (service *ValidatorService) VerifyToken(r *http.Request, w http.ResponseWriter) bool {
 
@@ -46,6 +47,14 @@ func (service *ValidatorService) IsFieldValid(accountModel models.AccountModel) 
 	accountStateIdMatch, _ := regexp.MatchString(stateIdRegex, accountModel.AccountStateId)
 	accountTypeIdMatch, _ := regexp.MatchString(typeIdRegex, accountModel.AccountTypeId)
 	return emailMatch && accountStateIdMatch && accountTypeIdMatch
+}
+
+func (service *ValidatorService) IsFieldValidState(accountState models.AccountStateModel) bool{
+	accountStateIdMatch, _ := regexp.MatchString(stateIdRegex, accountState.AccountStateId)
+	accountStateNameMatch, _ := regexp.MatchString(stateNameRegex, accountState.AccountStateName)
+	fmt.Println(accountStateIdMatch)
+	fmt.Println(accountStateNameMatch)
+	return accountStateIdMatch && accountStateNameMatch
 }
 
 

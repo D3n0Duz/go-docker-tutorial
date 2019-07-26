@@ -12,4 +12,5 @@ type IAccountService interface {
 
 	GetAccountType(accountid string) (models.AccountTypeModel, models.Errors)
 	GetAccountState(accountid string) (models.AccountStateModel, models.Errors)
+	PutAccountState(accountid string, accountStateModel models.AccountStateModel) (models.AccountStateModel, models.Errors)
 }

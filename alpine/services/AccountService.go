@@ -15,7 +15,7 @@ type AccountService struct {
 }
 
 const DefaultAccountTypeName = "Basic"
-const DefaultAccountStateName = "Active"
+const DefaultAccountStateName = "Inactive"
 
 func (service *AccountService) GetAccount(accountid string) (models.AccountModel, models.Errors){
 	data, err := service.AccountRepository.GetAccount(accountid)
@@ -112,6 +112,27 @@ func (service *AccountService) PutAccount(accountid string, accountModel models.
 	}
 	return data, models.Errors{}
 }	
+
+func (service *AccountService) PutAccountState(accountid string, accountStateModel models.AccountStateModel) (models.AccountStateModel, models.Errors){
+	
+	accountModelDb, err := service.GetAccount(accountid)
+	if err.Code() != 0{
+		return models.AccountStateModel{}, err
+	}
+
+	if !service.ValidatorService.IsFieldValidState(accountStateModel){
+		return models.AccountStateModel{}, models.Errors{"Invalid accountStateModel", 400}
+	}
+
+	data, err := service.AccountStateRepository.UpdateAccountState(accountModelDb.AccountStateId, accountStateModel)
+
+	if err.Code() != 0{
+		return models.AccountStateModel{}, err
+	}
+	return data, models.Errors{}
+}	
+
+
 func (service *AccountService) DeleteAccount(accountid string) models.Errors{
 	_, err := service.GetAccount(accountid)
 	if err.Code() != 0{
